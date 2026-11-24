@@ -25,6 +25,8 @@ export function VariantD({ lib, sync, phone }: VariantProps) {
   const [layersOpen, setLayersOpen] = useState(false)
   const [sort, setSort] = useState<SortKey>('dateAdded')
   const [desc, setDesc] = useState(true)
+  const [mode, setMode] = useState<'list' | 'tree'>('list')
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
   const press = usePressHighlight(lib.setHoverId)
 
   // Phone sheet snap points (px from bottom).
@@ -160,36 +162,93 @@ export function VariantD({ lib, sync, phone }: VariantProps) {
           </button>
         )}
       </div>
-      <div style={{ fontSize: 12, opacity: 0.6 }}>{sorted.length} Routes on the map</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{ fontSize: 12, opacity: 0.6 }}>{sorted.length} Routes on the map</span>
+        <div className="d-seg">
+          <button className={mode === 'list' ? 'on' : ''} onClick={() => setMode('list')} title="Flat list">
+            ☰ List
+          </button>
+          <button className={mode === 'tree' ? 'on' : ''} onClick={() => setMode('tree')} title="Grouped by folder">
+            ⌥ Tree
+          </button>
+        </div>
+      </div>
     </div>
   )
 
-  const list = (
-    <div className="d-list">
-      {sorted.map((f) => {
-        const open = f.id === lib.selectedId
-        return (
-          <div key={f.id} id={`d-item-${f.id}`} className={`d-item ${open ? 'open' : ''}`} onMouseEnter={() => lib.setHoverId(f.id)} onMouseLeave={() => lib.setHoverId(null)}>
-            <div className={`b-row ${lib.hoverId === f.id && !open ? 'hov' : ''}`} onClick={() => select(open ? null : f.id)}>
-              <RouteThumb coords={f.coords} size={40} color={open ? ACCENT : '#2f6fde'} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: open ? 'normal' : 'nowrap' }}>{f.name}</div>
-                <div className="meta">
-                  {f.folder || 'Library'} · {f.source}
-                </div>
-              </div>
-              <div style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
-                <div style={{ fontWeight: 600 }}>{km(f.distanceKm)}</div>
-                <div className="meta">↑ {metres(f.elevationGainM)}</div>
-              </div>
-              <DupIcons f={f} size={13} onClick={(k) => lib.showDuplicates(f, k)} />
-            </div>
-            {open && expanded(f)}
+  const row = (f: GpxFile, depth = 0) => {
+    const open = f.id === lib.selectedId
+    return (
+      <div key={f.id} id={`d-item-${f.id}`} className={`d-item ${open ? 'open' : ''}`} onMouseEnter={() => lib.setHoverId(f.id)} onMouseLeave={() => lib.setHoverId(null)}>
+        <div className={`b-row ${lib.hoverId === f.id && !open ? 'hov' : ''}`} style={{ paddingLeft: 14 + depth * 16 }} onClick={() => select(open ? null : f.id)}>
+          <RouteThumb coords={f.coords} size={depth ? 32 : 40} color={open ? ACCENT : '#2f6fde'} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: open ? 'normal' : 'nowrap' }}>{f.name}</div>
+            <div className="meta">{mode === 'tree' ? f.source : `${f.folder || 'Library'} · ${f.source}`}</div>
           </div>
-        )
-      })}
-    </div>
+          <div style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+            <div style={{ fontWeight: 600 }}>{km(f.distanceKm)}</div>
+            <div className="meta">↑ {metres(f.elevationGainM)}</div>
+          </div>
+          <DupIcons f={f} size={13} onClick={(k) => lib.showDuplicates(f, k)} />
+        </div>
+        {open && expanded(f)}
+      </div>
+    )
+  }
+
+  // Tree: the visible (filtered + sorted) GPX Files grouped under the current folder's subfolders.
+  const tree = useMemo(() => {
+    interface Node { path: string; name: string; folders: Map<string, Node>; files: GpxFile[]; count: number }
+    const root: Node = { path: lib.folder, name: '', folders: new Map(), files: [], count: 0 }
+    const base = lib.folder ? lib.folder.split('/').length : 0
+    for (const f of sorted) {
+      const parts = f.folder ? f.folder.split('/') : []
+      let n = root
+      n.count++
+      for (let i = base; i < parts.length; i++) {
+        const path = parts.slice(0, i + 1).join('/')
+        if (!n.folders.has(parts[i])) n.folders.set(parts[i], { path, name: parts[i], folders: new Map(), files: [], count: 0 })
+        n = n.folders.get(parts[i])!
+        n.count++
+      }
+      n.files.push(f)
+    }
+    return root
+  }, [sorted, lib.folder])
+  type TreeNode = typeof tree
+
+  const toggle = (path: string) =>
+    setCollapsed((c) => {
+      const n = new Set(c)
+      if (n.has(path)) n.delete(path)
+      else n.add(path)
+      return n
+    })
+  const renderNode = (n: TreeNode, depth: number): React.ReactNode => (
+    <>
+      {[...n.folders.values()]
+        .sort((a, b) => a.name.localeCompare(b.name, 'pl'))
+        .map((c) => {
+          const closed = collapsed.has(c.path)
+          return (
+            <div key={c.path}>
+              <div className="d-folder" style={{ paddingLeft: 14 + depth * 16 }} onClick={() => toggle(c.path)}>
+                <span className="chev">{closed ? '▸' : '▾'}</span>📁 {c.name}
+                <span className="cnt">{c.count}</span>
+                <button title="Open this folder" onClick={(e) => (e.stopPropagation(), lib.setFolder(c.path))}>
+                  ↗
+                </button>
+              </div>
+              {!closed && renderNode(c, depth + 1)}
+            </div>
+          )
+        })}
+      {n.files.map((f) => row(f, depth))}
+    </>
   )
+
+  const list = <div className="d-list">{mode === 'list' ? sorted.map((f) => row(f)) : renderNode(tree, 0)}</div>
 
   const otherSection = section !== 'library' && (
     <>

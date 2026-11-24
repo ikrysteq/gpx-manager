@@ -191,3 +191,12 @@ button { font: inherit; cursor: pointer; }
 .d-sync .proto-bar { background: #374151; }
 .d-sync .proto-sync-problems { background: #3b2412; border-color: #7c3d12; }
 .d-sync-close { margin-top: 12px; width: 100%; padding: 10px; border: 0; border-radius: 10px; background: #374151; color: #fff; }
+.d-seg { margin-left: auto; display: inline-flex; background: #f1f2f4; border-radius: 999px; padding: 2px; }
+.d-seg button { border: 0; background: none; border-radius: 999px; padding: 3px 10px; font-size: 12px; color: #475467; }
+.d-seg button.on { background: #111827; color: #fff; }
+.d-folder { display: flex; align-items: center; gap: 6px; padding: 7px 14px; font-weight: 600; font-size: 13px; cursor: pointer; background: #fafafb; border-bottom: 1px solid #f2f3f5; position: sticky; top: 0; z-index: 1; }
+.d-folder:hover { background: #f3f0ff; }
+.d-folder .chev { width: 12px; color: #7c3aed; }
+.d-folder .cnt { font-weight: 400; font-size: 12px; opacity: .55; }
+.d-folder button { margin-left: auto; border: 0; background: none; color: #7c3aed; padding: 0 4px; opacity: .6; }
+.d-folder button:hover { opacity: 1; }
