@@ -1,0 +1,23 @@
+{
+  "name": "gpx-manager-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prototype": "vite --host --open '/?variant=A'",
+    "build": "tsc -b && vite build"
+  },
+  "dependencies": {
+    "@tanstack/react-table": "^8.21.3",
+    "maplibre-gl": "^6.19.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/geojson": "^7946.0.16",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}
