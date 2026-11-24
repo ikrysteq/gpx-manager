@@ -1,0 +1,12 @@
+# Local config and secrets
+.env
+certs/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Backend
+backend/target/
+backend/data/
+backend/library/

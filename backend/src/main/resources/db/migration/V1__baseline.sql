@@ -1,0 +1,1 @@
+-- Empty baseline. Later migrations add the Route index, Trash bookkeeping, Settings and Ride History.
