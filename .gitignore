@@ -10,3 +10,4 @@ frontend/dist/
 backend/target/
 backend/data/
 backend/library/
+*.tsbuildinfo

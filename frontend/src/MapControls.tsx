@@ -1,6 +1,6 @@
-export function SyncIcon({ size = 20 }: { size?: number }) {
+function SyncIcon() {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+    <svg width={20} height={20} viewBox="0 0 24 24" aria-hidden="true">
       <path d="M20 12a8 8 0 0 1-14.3 4.9M4 12a8 8 0 0 1 14.3-4.9" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
       <path d="M18.5 3v4.5H14M5.5 21v-4.5H10" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>

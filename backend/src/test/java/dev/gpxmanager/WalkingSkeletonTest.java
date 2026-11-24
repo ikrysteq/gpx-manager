@@ -38,7 +38,8 @@ class WalkingSkeletonTest {
 
         assertThat(response.statusCode()).isEqualTo(200);
         assertThat(response.body()).contains("\"status\":\"UP\"").contains("\"schemaVersion\":\"1\"");
-        assertThat(tmp.resolve("data/gpx-manager.db")).exists();
-        assertThat(Files.size(tmp.resolve("data/gpx-manager.db"))).isPositive();
+        Path database = tmp.resolve("data/gpx-manager.db");
+        assertThat(database).exists();
+        assertThat(Files.size(database)).isPositive();
     }
 }

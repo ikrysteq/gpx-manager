@@ -8,25 +8,26 @@ maplibregl.setWorkerUrl(workerUrl)
 
 // OpenFreeMap: OpenStreetMap-based vector tiles, no API key.
 const STYLE_URL = 'https://tiles.openfreemap.org/styles/positron'
+const KRAKOW: [number, number] = [19.94, 50.0]
 
 export function MapView({ className }: { className?: string }) {
-  const el = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const map = new maplibregl.Map({
-      container: el.current!,
+      container: containerRef.current!,
       style: STYLE_URL,
-      center: [19.94, 50.0],
+      center: KRAKOW,
       zoom: 8.5,
       attributionControl: { compact: true },
     })
-    const ro = new ResizeObserver(() => map.resize())
-    ro.observe(el.current!)
+    const resizeObserver = new ResizeObserver(() => map.resize())
+    resizeObserver.observe(containerRef.current!)
     return () => {
-      ro.disconnect()
+      resizeObserver.disconnect()
       map.remove()
     }
   }, [])
 
-  return <div ref={el} className={className} data-testid="map" />
+  return <div ref={containerRef} className={className} data-testid="map" />
 }
