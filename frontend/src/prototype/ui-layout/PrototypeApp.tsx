@@ -11,11 +11,13 @@ import { useIsPhone } from './shared'
 import { VariantA } from './variants/VariantA'
 import { VariantB } from './variants/VariantB'
 import { VariantC } from './variants/VariantC'
+import { VariantD } from './variants/VariantD'
 
 const VARIANTS: VariantMeta[] = [
   { key: 'A', name: 'Workbench' },
   { key: 'B', name: 'Map-first' },
   { key: 'C', name: 'Rail + inline' },
+  { key: 'D', name: 'B look + C function' },
 ]
 
 export function PrototypeApp() {
@@ -38,6 +40,7 @@ export function PrototypeApp() {
       {variant === 'A' && <VariantA key="A" {...props} />}
       {variant === 'B' && <VariantB key="B" {...props} />}
       {variant === 'C' && <VariantC key="C" {...props} />}
+      {variant === 'D' && <VariantD key="D" {...props} />}
       <PrototypeSwitcher
         variants={VARIANTS}
         current={variant}
