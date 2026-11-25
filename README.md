@@ -2,6 +2,10 @@
 
 Your private GPX files explorer and manager.
 
+![gpx-manager desktop layout (UI prototype, variant D)](docs/images/desktop.png)
+
+_Screenshot from the throwaway UI prototype with fake data; the real app is still taking shape._
+
 One Docker container: Spring Boot (Java 25, Maven) in `backend/` serves the Vite + React + TypeScript frontend in
 `frontend/` over HTTPS on port 8443. The app's own data (SQLite, migrated by Flyway at startup) lives in a Docker
 named volume; the Library (your folder of GPX Files) is bind-mounted from the host.
