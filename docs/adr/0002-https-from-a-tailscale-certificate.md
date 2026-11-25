@@ -1,6 +1,6 @@
 # HTTPS comes from a Tailscale certificate, not mkcert on the `.local` name
 
-The app is reached at `https://<mac>.<tailnet>.ts.net:8443`. Spring Boot serves HTTPS itself using a Let's Encrypt certificate that `tailscale cert` writes into `certs/` (mounted read-only into the container). This replaces the original plan of an mkcert certificate for the Mac's Bonjour name (`<mac>.local`). The Owner already runs Tailscale with MagicDNS on every device, so a publicly trusted certificate needs no root CA installed on each phone and doesn't depend on `.local` resolving on the phone. The app still needs HTTPS even though Tailscale encrypts the traffic: installing the PWA and sharing a `File` through the Web Share API only work on a secure page.
+The app is reached at `https://<mac>.<tailnet>.ts.net:8443`. Spring Boot serves HTTPS itself using a Let's Encrypt certificate that `tailscale cert` writes into `certs/` (mounted read-only into the container). This replaces the original plan of an mkcert certificate for the Mac's Bonjour name (`<mac>.local`). With Tailscale and MagicDNS on every device that opens the app, a publicly trusted certificate needs no root CA added to each phone and doesn't depend on `.local` resolving on the phone. The app still needs HTTPS even though Tailscale encrypts the traffic: installing the PWA and sharing a `File` through the Web Share API only work on a secure page.
 
 ## Considered Options
 
