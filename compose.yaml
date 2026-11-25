@@ -1,0 +1,23 @@
+services:
+  gpx-manager:
+    build: .
+    image: gpx-manager
+    # Retry a crash a few times, but give up on a persistent failure (e.g. missing certificate) instead of looping.
+    restart: on-failure:3
+    ports:
+      - "8443:8443"
+    environment:
+      SERVER_PORT: "8443"
+      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_CERTIFICATE: file:/certs/cert.pem
+      SERVER_SSL_CERTIFICATE_PRIVATE_KEY: file:/certs/key.pem
+    volumes:
+      # The Library: its host path comes only from .env (see .env.example).
+      - ${LIBRARY_PATH:?Set LIBRARY_PATH in .env (copy .env.example)}:/library
+      # The app's own data (SQLite), kept apart from the Library.
+      - gpx-data:/data
+      # Tailscale (Let's Encrypt) certificate and key, written by `tailscale cert` (see ADR-0002).
+      - ./certs:/certs:ro
+
+volumes:
+  gpx-data:
