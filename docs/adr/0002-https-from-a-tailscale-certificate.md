@@ -10,6 +10,6 @@ The app is reached at `https://<mac>.<tailnet>.ts.net:8443`. Spring Boot serves 
 ## Consequences
 
 - Every device that opens the app must have Tailscale connected, even at home.
-- The certificate lasts about 90 days and isn't renewed automatically: rerun `scripts/generate-cert.sh` and restart the container.
+- The certificate lasts about 90 days and isn't renewed automatically: rerun `tailscale cert` (see the README) and restart the container.
 - The machine's `*.ts.net` name appears in public Certificate Transparency logs.
 - HTTPS Certificates must stay enabled in the tailnet's DNS settings.

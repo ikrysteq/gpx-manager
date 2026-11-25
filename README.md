@@ -8,15 +8,15 @@ named volume; the Library (your folder of GPX Files) is bind-mounted from the ho
 
 ## Run it
 
-1. Get a trusted certificate for this Mac's Tailscale name (needs Tailscale with MagicDNS and HTTPS Certificates
-   enabled; see `docs/adr/0002-https-from-a-tailscale-certificate.md`):
+1. Put a trusted certificate for this Mac's Tailscale name into `certs/` (git-ignored). Needs Tailscale with MagicDNS
+   and HTTPS Certificates enabled; see `docs/adr/0002-https-from-a-tailscale-certificate.md`:
 
    ```sh
-   scripts/generate-cert.sh
+   mkdir -p certs
+   tailscale cert --cert-file certs/cert.pem --key-file certs/key.pem <mac>.<tailnet>.ts.net
    ```
 
-   It writes `certs/cert.pem` and `certs/key.pem` (git-ignored). The certificate lasts about 90 days: rerun the
-   script and `docker compose restart` to renew it.
+   The certificate lasts about 90 days: rerun the command and `docker compose restart` to renew it.
 
 2. Point the app at your Library:
 
