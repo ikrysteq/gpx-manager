@@ -34,10 +34,11 @@ named volume; the Library (your folder of GPX Files) is bind-mounted from the ho
 
 ## Develop
 
-Backend on plain HTTP `:8080` (needs JDK 25; data goes to `backend/data/`):
+Backend on plain HTTP `:8080` (needs JDK 25 on `JAVA_HOME`; the build stops with a clear message otherwise; data goes to
+`backend/data/`):
 
 ```sh
-cd backend && mvn spring-boot:run
+cd backend && ./mvnw spring-boot:run
 ```
 
 Frontend in Vite dev mode, proxying `/api` to the backend:
@@ -50,6 +51,9 @@ npm --prefix frontend run dev        # http://localhost:5173
 Checks:
 
 ```sh
-cd backend && mvn test               # backend integration tests
+cd backend && ./mvnw verify          # backend integration tests
 npm --prefix frontend run typecheck
 ```
+
+CI (`.github/workflows/ci.yml`) runs the backend tests, the frontend typecheck and build, and the container image
+build on every pull request and push to `main`.
