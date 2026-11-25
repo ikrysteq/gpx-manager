@@ -20,5 +20,6 @@ WORKDIR /app
 COPY --from=backend /build/backend/target/gpx-manager-*.jar app.jar
 ENV GPX_DATA_DIR=/data \
     GPX_LIBRARY_PATH=/library
+COPY docker/entrypoint.sh /app/entrypoint.sh
 EXPOSE 8443
-ENTRYPOINT ["java", "--enable-native-access=ALL-UNNAMED", "-jar", "/app/app.jar"]
+ENTRYPOINT ["/app/entrypoint.sh"]
