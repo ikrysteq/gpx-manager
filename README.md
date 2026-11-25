@@ -8,13 +8,15 @@ named volume; the Library (your folder of GPX Files) is bind-mounted from the ho
 
 ## Run it
 
-1. Generate a trusted certificate for this Mac's `<mac-name>.local` name (needs `brew install mkcert`):
+1. Get a trusted certificate for this Mac's Tailscale name (needs Tailscale with MagicDNS and HTTPS Certificates
+   enabled; see `docs/adr/0002-https-from-a-tailscale-certificate.md`):
 
    ```sh
    scripts/generate-cert.sh
    ```
 
-   It writes `certs/cert.pem` and `certs/key.pem` (git-ignored) and prints how to trust the mkcert root CA on a phone.
+   It writes `certs/cert.pem` and `certs/key.pem` (git-ignored). The certificate lasts about 90 days: rerun the
+   script and `docker compose restart` to renew it.
 
 2. Point the app at your Library:
 
@@ -28,7 +30,7 @@ named volume; the Library (your folder of GPX Files) is bind-mounted from the ho
    docker compose up --build
    ```
 
-   Open `https://<mac-name>.local:8443` on the Mac or on a phone on the same network.
+   Open `https://<mac>.<tailnet>.ts.net:8443` from any device with Tailscale connected.
 
 ## Develop
 
